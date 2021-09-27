@@ -27,13 +27,11 @@ class BC_Trainer(object):
         ################
         ## RL TRAINER
         ################
-
         self.rl_trainer = RL_Trainer(self.params) ## HW1: you will modify this
 
         #######################
         ## LOAD EXPERT POLICY
         #######################
-
         print('Loading expert policy from...', self.params['expert_policy_file'])
         self.loaded_expert_policy = LoadedGaussianPolicy(self.params['expert_policy_file'])
         print('Done restoring expert policy...')
