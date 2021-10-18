@@ -43,40 +43,42 @@ class DQNAgent(object):
             Note that self.last_obs must always point to the new latest observation.
         """        
 
-        # TODO store the latest observation ("frame") into the replay buffer
-        # HINT: the replay buffer used here is `MemoryOptimizedReplayBuffer`
-            # in dqn_utils.py
-        self.replay_buffer_idx = TODO
+        # store the latest observation ("frame") into the replay buffer
+        self.replay_buffer_idx = self.replay_buffer.store_frame(self.last_obs)
 
         eps = self.exploration.value(self.t)
 
-        # TODO use epsilon greedy exploration when selecting action
-        perform_random_action = TODO
+        # use epsilon greedy exploration when selecting action
+        epsilon = self.exploration.value(self.t)
+        perform_random_action = (np.random.random() < epsilon) or (self.t < self.learning_starts)
         if perform_random_action:
             # HINT: take random action 
                 # with probability eps (see np.random.random())
                 # OR if your current step number (see self.t) is less that self.learning_starts
-            action = TODO
+            action = np.random.randint(self.num_actions)
         else:
             # HINT: Your actor will take in multiple previous observations ("frames") in order
                 # to deal with the partial observability of the environment. Get the most recent 
                 # `frame_history_len` observations using functionality from the replay buffer,
-                # and then use those observations as input to your actor. 
-            action = TODO
+                # and then use those observations as input to your actor.
+            obs = self.replay_buffer.encode_recent_observation()
+            action = self.actor.get_action(obs)
         
-        # TODO take a step in the environment using the action from the policy
+        # take a step in the environment using the action from the policy
         # HINT1: remember that self.last_obs must always point to the newest/latest observation
         # HINT2: remember the following useful function that you've seen before:
             #obs, reward, done, info = env.step(action)
-        TODO
+        obs, reward, done, info = self.env.step(action)
+        self.last_obs = obs
 
         # TODO store the result of taking this action into the replay buffer
         # HINT1: see your replay buffer's `store_effect` function
         # HINT2: one of the arguments you'll need to pass in is self.replay_buffer_idx from above
-        TODO
+        self.replay_buffer.store_effect(self.replay_buffer_idx+1, action, reward, done)
 
         # TODO if taking this step resulted in done, reset the env (and the latest observation)
-        TODO
+        if done:
+            self.env.reset()
 
     def sample(self, batch_size):
         if self.replay_buffer.can_sample(self.batch_size):
