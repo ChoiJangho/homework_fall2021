@@ -30,3 +30,11 @@ solution:
 ```
 sudo apt-get install patchelf
 ```
+
+ROM:
+```
+wget http://www.atarimania.com/roms/Roms.rar
+unrar e -r Roms.rar
+unzip ROMS.zip
+python -m atari_py.import_roms /path_to/ROMS
+```
