@@ -54,7 +54,7 @@ class DQNAgent(object):
             # HINT: take random action 
                 # with probability eps (see np.random.random())
                 # OR if your current step number (see self.t) is less that self.learning_starts
-            action = np.random.randint(self.num_actions)
+            action = self.env.action_space.sample()
         else:
             # HINT: Your actor will take in multiple previous observations ("frames") in order
                 # to deal with the partial observability of the environment. Get the most recent 
@@ -77,7 +77,7 @@ class DQNAgent(object):
 
         # TODO if taking this step resulted in done, reset the env (and the latest observation)
         if done:
-            self.env.reset()
+            self.last_obs = self.env.reset()
 
     def sample(self, batch_size):
         if self.replay_buffer.can_sample(self.batch_size):
@@ -100,7 +100,7 @@ class DQNAgent(object):
             # TODO update the target network periodically
             # HINT: your critic already has this functionality implemented
             if self.num_param_updates % self.target_update_freq == 0:
-                self.update_target_network()
+                self.critic.update_target_network()
 
             self.num_param_updates += 1
 
