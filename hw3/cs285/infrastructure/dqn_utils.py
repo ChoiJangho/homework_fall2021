@@ -42,7 +42,7 @@ def get_env_kwargs(env_name):
             'learning_starts': 50000,
             'target_update_freq': 10000,
             'replay_buffer_size': int(1e6),
-            'num_timesteps': int(2e8),
+            'num_timesteps': int(1e8),
             'q_func': create_atari_q_network,
             'learning_freq': 4,
             'grad_norm_clipping': 10,
@@ -81,8 +81,34 @@ def get_env_kwargs(env_name):
 
 
 def create_lander_q_network(ob_dim, num_actions):
+    # return nn.Sequential(
+    #     nn.Linear(ob_dim, 64),
+    #     nn.ReLU(),
+    #     nn.Linear(64, 64),
+    #     nn.ReLU(),
+    #     nn.Linear(64, num_actions),
+    # )
+    # hyperparams1
+    # return nn.Sequential(
+    #     nn.Linear(ob_dim, 16),
+    #     nn.ReLU(),
+    #     nn.Linear(16, 16),
+    #     nn.ReLU(),
+    #     nn.Linear(16, num_actions),
+    # )
+    # hyperparams2
+    # return nn.Sequential(
+    #     nn.Linear(ob_dim, 64),
+    #     nn.ReLU(),
+    #     nn.Linear(64, num_actions),
+    # )
+    # hyperparams3
     return nn.Sequential(
         nn.Linear(ob_dim, 64),
+        nn.ReLU(),
+        nn.Linear(64, 64),
+        nn.ReLU(),
+        nn.Linear(64, 64),
         nn.ReLU(),
         nn.Linear(64, 64),
         nn.ReLU(),
@@ -119,6 +145,7 @@ def create_atari_q_network(ob_dim, num_actions):
     )
 
 def atari_exploration_schedule(num_timesteps):
+    ## Default
     return PiecewiseSchedule(
         [
             (0, 1.0),
@@ -175,6 +202,18 @@ def lander_exploration_schedule(num_timesteps):
             (num_timesteps * 0.1, 0.02),
         ], outside_value=0.02
     )
+    ## Hyperparams 1
+    # return PiecewiseSchedule(
+    #     [
+    #         (0, 1.0),
+    #         (num_timesteps / 20, 0.1),
+    #         (num_timesteps * 0.1, 0.02),
+    #     ], outside_value=0.02
+    # )
+    # ## Hyperparams 2
+    # return LinearSchedule(num_timesteps *0.1, 0.01)
+    ## Hyperparams 3
+    # return LinearSchedule(num_timesteps *0.5, 0.02)
 
 
 def sample_n_unique(sampling_f, n):

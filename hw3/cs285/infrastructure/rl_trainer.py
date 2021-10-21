@@ -211,7 +211,7 @@ class RL_Trainer(object):
             train_video_paths: paths which also contain videos for visualization purposes
         """
         if itr == 0:
-            if load_initial_expertdata:
+            if initial_expertdata:
                 paths = pickle.load(open(self.params['expert_data'], 'rb'))
                 return paths, 0, None
             else:
