@@ -55,6 +55,7 @@ def main():
     parser.add_argument('--use_rnd', action='store_true')
     parser.add_argument('--num_exploration_steps', type=int, default=10000)
     parser.add_argument('--unsupervised_exploration', action='store_true')
+    parser.add_argument('--use_pseudo_count', action='store_true')
 
     parser.add_argument('--offline_exploitation', action='store_true')
     parser.add_argument('--cql_alpha', type=float, default=0.0)
@@ -73,6 +74,7 @@ def main():
     parser.add_argument('--save_params', action='store_true')
 
     parser.add_argument('--use_boltzmann', action='store_true')
+    parser.add_argument('--learning_starts', type=int, default=int(2e3))
 
     args = parser.parse_args()
 
@@ -84,7 +86,6 @@ def main():
     params['exploit_weight_schedule'] = ConstantSchedule(1.0)
     params['video_log_freq'] = -1 # This param is not used for DQN
     params['num_timesteps'] = 50000
-    params['learning_starts'] = 2000
     params['eps'] = 0.2
     ##################################
     ### CREATE DIRECTORY FOR LOGGING
@@ -108,7 +109,7 @@ def main():
         params['explore_weight_schedule'] = ConstantSchedule(1.0)
         params['exploit_weight_schedule'] = ConstantSchedule(0.0)
         
-        if not params['use_rnd']:
+        if not params['use_rnd'] and not params['use_pseudo_count']:
             params['learning_starts'] = params['num_exploration_steps']
     
 
